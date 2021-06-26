@@ -33,12 +33,13 @@ def list_possibilities(limit, periods):
     while current_combinations:
         for combination in current_combinations:
             combination_sum = sum(combination)
-            if(limit - combination_sum <= shorter_period):
+            if limit - combination_sum < shorter_period:
+                # valid combination
                 possibilities.append(combination)
             else:
                 # filter function returns only values greater than the last element in combination
                 for period in filter(lambda x: x >= combination[-1], periods):
-                    if combination_sum + period < limit:
+                    if combination_sum + period <= limit:
                         aux.append(combination + [period])
         current_combinations = aux
         aux = []
@@ -46,7 +47,7 @@ def list_possibilities(limit, periods):
     return possibilities
 
 
-def prepare_output(demands, possibilities):
+def create_model(demands, possibilities):
     constraints = []
     # create the objective function (min: x0 + x1 + ... + xn)
     objective_function = list(map(lambda x: f'x{x}', list(range(0, len(possibilities)))))
@@ -86,7 +87,7 @@ def main():
 
     periods = [demand[-1] for demand in demands]
     possibilities = list_possibilities(MAX_PERIOD, periods)
-    objective_function, constraints = prepare_output(demands, possibilities)
+    objective_function, constraints = create_model(demands, possibilities)
     output_lp_solve(objective_function, constraints)
     # print_log(demands, possibilities, objective_function, constraints)
 
