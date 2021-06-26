@@ -1,4 +1,4 @@
 tempo: tempo.py
-    printf '#!/usr/bin/env python\n' >$@
-    python ./$< >>$@
-    chmod +x $@
+	printf '#!/usr/bin/env python3\n' >$@
+	cat $< >> $@
+	chmod +x $@
